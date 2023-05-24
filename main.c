@@ -2,16 +2,19 @@
 #include <stdio.h>
 #include <string.h>
 #include "monty.h"
+
+#define MAX_LINE_LENGTH 1024
+
 int main(int argc, char *argv[])
 {
-	FILE *file;
-	char *line = NULL;
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
     unsigned int line_number = 0;
-      char *opcode;
+    char *opcode;
     stack_t *stack = NULL;
     char *argument;
-    size_t len = 0;
-    ssize_t read;
+    size_t line_length;
+
     /* Check if the correct number of arguments is provided */
     if (argc != 2)
     {
@@ -28,16 +31,21 @@ int main(int argc, char *argv[])
     }
 
     /* Read the file line by line and execute the instructions */
-
-     while ((read = getline(&line, &len, file)) != -1)
-     {
+    while (fgets(line, MAX_LINE_LENGTH, file) != NULL)
+    {
         line_number++;
+        line_length = strlen(line);
+
+        /* Remove trailing newline character */
+        if (line_length > 0 && line[line_length - 1] == '\n')
+            line[line_length - 1] = '\0';
+
         /* Tokenize the line to get the opcode and its argument (if any) */
-        opcode = strtok(line, " \t\n");
+        opcode = strtok(line, " \t");
         if (opcode == NULL || opcode[0] == '#')
             continue; /* Skip empty lines or comments */
 
-        argument = strtok(NULL, " \t\n");
+        argument = strtok(NULL, " \t");
 
         /* Execute the corresponding opcode function */
         if (strcmp(opcode, "push") == 0)
@@ -48,37 +56,35 @@ int main(int argc, char *argv[])
         {
             pall(&stack);
         }
-	else if (strcmp(opcode, "pint") == 0)
+        else if (strcmp(opcode, "pint") == 0)
         {
             pint(&stack, line_number);
         }
-	else if (strcmp(opcode, "pop") == 0)
+        else if (strcmp(opcode, "pop") == 0)
         {
             pop(&stack, line_number);
         }
-	else if (strcmp(opcode, "swap") == 0)
+        else if (strcmp(opcode, "swap") == 0)
         {
             swap(&stack, line_number);
         }
-	else if (strcmp(opcode, "add") == 0)
+        else if (strcmp(opcode, "add") == 0)
         {
             add(&stack, line_number);
         }
-	else if (strcmp(opcode, "nop") == 0)
+        else if (strcmp(opcode, "nop") == 0)
         {
             nop(&stack, line_number);
         }
         else
         {
             fprintf(stderr, "L%u: unknown instruction %s\n", line_number, opcode);
-            free(line);
             fclose(file);
             exit(EXIT_FAILURE);
         }
     }
 
     /* Clean up */
-    free(line);
     fclose(file);
     /* Free the stack (if necessary) */
     /* Return success */
