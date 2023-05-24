@@ -46,4 +46,80 @@ void pall(stack_t **stack)
         current = current->next;
     }
 }
+void pint(stack_t **stack, unsigned int line_number)
+{
+    if (*stack == NULL)
+    {
+        fprintf(stderr, "L%u: can't pint, stack empty\n", line_number);
+        exit(EXIT_FAILURE);
+    }
 
+    printf("%d\n", (*stack)->n);
+}
+void pop(stack_t **stack, unsigned int line_number)
+{
+	 stack_t *temp;
+    if (*stack == NULL)
+    {
+        fprintf(stderr, "L%u: can't pop an empty stack\n", line_number);
+        exit(EXIT_FAILURE);
+    }
+
+    temp = *stack;
+    *stack = (*stack)->next;
+
+    if (*stack != NULL)
+        (*stack)->prev = NULL;
+
+    free(temp);
+}
+void swap(stack_t **stack, unsigned int line_number)
+{
+	stack_t *top;
+	stack_t *next;
+
+    if (*stack == NULL || (*stack)->next == NULL)
+    {
+        fprintf(stderr, "L%u: can't swap, stack too short\n", line_number);
+        exit(EXIT_FAILURE);
+    }
+
+    top = *stack;
+    next = (*stack)->next;
+
+    top->prev = next;
+    top->next = next->next;
+
+    next->prev = NULL;
+    next->next = top;
+
+    if (top->next != NULL)
+        top->next->prev = top;
+
+    *stack = next;
+}
+void add(stack_t **stack, unsigned int line_number)
+{
+	stack_t *top;
+	 stack_t *next;
+    if (*stack == NULL || (*stack)->next == NULL)
+    {
+        fprintf(stderr, "L%u: can't add, stack too short\n", line_number);
+        exit(EXIT_FAILURE);
+    }
+
+    top = *stack;
+    next = (*stack)->next;
+
+    next->n += top->n;
+
+    *stack = next;
+    (*stack)->prev = NULL;
+    free(top);
+}
+void nop(stack_t **stack, unsigned int line_number)
+{
+    (void)stack;
+    (void)line_number;
+    /* Do nothing */
+}
