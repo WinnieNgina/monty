@@ -1,4 +1,5 @@
 #include "monty.h"
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 void push(stack_t **stack, unsigned int line_number, char *argument)
@@ -8,7 +9,7 @@ void push(stack_t **stack, unsigned int line_number, char *argument)
     int value;
 
     /* Example: Assuming the argument is provided as the global variable 'argument' */
-    if (argument == NULL)
+    if (argument == NULL || !is_integer(argument))
     {
         fprintf(stderr, "L%u: usage: push integer\n", line_number);
         exit(EXIT_FAILURE);
