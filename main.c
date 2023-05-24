@@ -3,91 +3,90 @@
 #include <string.h>
 #include "monty.h"
 
-#define MAX_LINE_LENGTH 1024
+void execute_instruction(stack_t **stack, unsigned int line_number, char *opcode, char *argument);
+void process_file(const char *filename);
 
 int main(int argc, char *argv[])
 {
-    FILE *file;
-    char line[MAX_LINE_LENGTH];
-    unsigned int line_number = 0;
-    char *opcode;
-    stack_t *stack = NULL;
-    char *argument;
-    size_t line_length;
-
-    /* Check if the correct number of arguments is provided */
     if (argc != 2)
     {
         fprintf(stderr, "USAGE: monty file\n");
         exit(EXIT_FAILURE);
     }
 
-    /* Open the Monty byte code file */
-    file = fopen(argv[1], "r");
+    process_file(argv[1]);
+
+    return 0;
+}
+
+void execute_instruction(stack_t **stack, unsigned int line_number, char *opcode, char *argument)
+{
+    if (strcmp(opcode, "push") == 0)
+    {
+        push(stack, line_number, argument);
+    }
+    else if (strcmp(opcode, "pall") == 0)
+    {
+        pall(stack);
+    }
+    else if (strcmp(opcode, "pint") == 0)
+    {
+        pint(stack, line_number);
+    }
+    else if (strcmp(opcode, "pop") == 0)
+    {
+        pop(stack, line_number);
+    }
+    else if (strcmp(opcode, "swap") == 0)
+    {
+        swap(stack, line_number);
+    }
+    else if (strcmp(opcode, "add") == 0)
+    {
+        add(stack, line_number);
+    }
+    else if (strcmp(opcode, "nop") == 0)
+    {
+        nop(stack, line_number);
+    }
+    else
+    {
+        fprintf(stderr, "L%u: unknown instruction %s\n", line_number, opcode);
+        exit(EXIT_FAILURE);
+    }
+}
+
+void process_file(const char *filename)
+{
+    FILE *file;
+    char *line = NULL;
+    unsigned int line_number = 0;
+    char *opcode;
+    stack_t *stack = NULL;
+    char *argument;
+    size_t len = 0;
+    ssize_t read;
+
+    file = fopen(filename, "r");
     if (file == NULL)
     {
-        fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
+        fprintf(stderr, "Error: Can't open file %s\n", filename);
         exit(EXIT_FAILURE);
     }
 
-    /* Read the file line by line and execute the instructions */
-    while (fgets(line, MAX_LINE_LENGTH, file) != NULL)
+    while ((read = getline(&line, &len, file)) != -1)
     {
         line_number++;
-        line_length = strlen(line);
-
-        /* Remove trailing newline character */
-        if (line_length > 0 && line[line_length - 1] == '\n')
-            line[line_length - 1] = '\0';
-
-        /* Tokenize the line to get the opcode and its argument (if any) */
-        opcode = strtok(line, " \t");
+        opcode = strtok(line, " \t\n");
         if (opcode == NULL || opcode[0] == '#')
-            continue; /* Skip empty lines or comments */
+            continue;
 
-        argument = strtok(NULL, " \t");
+        argument = strtok(NULL, " \t\n");
 
-        /* Execute the corresponding opcode function */
-        if (strcmp(opcode, "push") == 0)
-        {
-            push(&stack, line_number, argument);
-        }
-        else if (strcmp(opcode, "pall") == 0)
-        {
-            pall(&stack);
-        }
-        else if (strcmp(opcode, "pint") == 0)
-        {
-            pint(&stack, line_number);
-        }
-        else if (strcmp(opcode, "pop") == 0)
-        {
-            pop(&stack, line_number);
-        }
-        else if (strcmp(opcode, "swap") == 0)
-        {
-            swap(&stack, line_number);
-        }
-        else if (strcmp(opcode, "add") == 0)
-        {
-            add(&stack, line_number);
-        }
-        else if (strcmp(opcode, "nop") == 0)
-        {
-            nop(&stack, line_number);
-        }
-        else
-        {
-            fprintf(stderr, "L%u: unknown instruction %s\n", line_number, opcode);
-            fclose(file);
-            exit(EXIT_FAILURE);
-        }
+        execute_instruction(&stack, line_number, opcode, argument);
     }
 
-    /* Clean up */
+    free(line);
     fclose(file);
-    /* Free the stack (if necessary) */
-    /* Return success */
-    return 0;
 }
 
