@@ -75,11 +75,15 @@ void process_file(const char *filename)
     while ((read = getline(&line, &len, file)) != -1)
     {
         line_number++;
-        opcode = strtok(line, " \t\n");
-        if (opcode == NULL || opcode[0] == '#')
+        opcode = strtok(line, " \t\n\r");
+        if (opcode == NULL)
+	{
+            free(opcode);
             continue;
-
-        argument = strtok(NULL, " \t\n");
+	}
+	else if (opcode[0] == '#')
+		continue;
+        argument = strtok(NULL, " \t\n\r");
 
         execute_instruction(&stack, line_number, opcode, argument);
     }
