@@ -1,6 +1,4 @@
-#include <ctype.h>
 #include "monty.h"
-#include <stddef.h>
 
 int is_integer(const char *str)
 {

@@ -2,6 +2,11 @@
 #define LISTS_H
 #define _GNU_SOURCE
 #include <sys/types.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stddef.h>
+#include <ctype.h>
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -41,5 +46,6 @@ void nop(stack_t **stack, unsigned int line_number);
 int is_integer(const char *str);
 void execute_instruction(stack_t **stack, unsigned int line_number, char *opcode, char *argument);
 void process_file(const char *filename);
+void sub(stack_t **stack, unsigned int line_number);
 
 #endif

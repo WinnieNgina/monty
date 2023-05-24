@@ -1,7 +1,4 @@
 #include "monty.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
 int main(int argc, char *argv[])
 {
@@ -45,6 +42,10 @@ void execute_instruction(stack_t **stack, unsigned int line_number, char *opcode
     else if (strcmp(opcode, "nop") == 0)
     {
         nop(stack, line_number);
+    }
+    else if (strcmp(opcode, "sub") == 0)
+    {
+        sub(stack, line_number);
     }
     else
     {
