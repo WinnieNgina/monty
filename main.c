@@ -87,8 +87,8 @@ void process_file(const char *filename)
 
         execute_instruction(&stack, line_number, opcode, argument);
     }
-
-    free(line);
+    
     fclose(file);
+    free(line);
 }
 
