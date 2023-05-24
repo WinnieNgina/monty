@@ -1,10 +1,7 @@
+#include "monty.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "monty.h"
-
-void execute_instruction(stack_t **stack, unsigned int line_number, char *opcode, char *argument);
-void process_file(const char *filename);
 
 int main(int argc, char *argv[])
 {
