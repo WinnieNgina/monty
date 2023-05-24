@@ -1,5 +1,5 @@
-#ifndef LISTS_H
-#define LISTS_H
+#ifndef MONTY_H
+#define MONTY_H
 #define _GNU_SOURCE
 #include <sys/types.h>
 #include <stdlib.h>
