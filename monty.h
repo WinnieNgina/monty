@@ -47,5 +47,6 @@ int is_integer(const char *str);
 void execute_instruction(stack_t **stack, unsigned int line_number, char *opcode, char *argument);
 void process_file(const char *filename);
 void sub(stack_t **stack, unsigned int line_number);
+void cleanup(FILE *file, char *line, stack_t **stack);
 
 #endif

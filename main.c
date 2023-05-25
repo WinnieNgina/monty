@@ -50,7 +50,7 @@ void execute_instruction(stack_t **stack, unsigned int line_number, char *opcode
     else
     {
         fprintf(stderr, "L%u: unknown instruction %s\n", line_number, opcode);
-        exit(EXIT_FAILURE);
+	exit(EXIT_FAILURE);
     }
 }
 
@@ -87,8 +87,6 @@ void process_file(const char *filename)
 
         execute_instruction(&stack, line_number, opcode, argument);
     }
-    
-    fclose(file);
-    free(line);
+	cleanup(file, line, &stack);    
 }
 
